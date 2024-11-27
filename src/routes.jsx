@@ -11,19 +11,59 @@ import Dashboard from './components/Dashboard/dashboard';
 import Planejamento from './components/Planejamento/Planejamento';
 import Pagamentos from './components/Pagamentos/Pagamento';
 import NotFound from './components/NotFound/NotFound'; // Importando a página de erro 404
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute'; // Importando o ProtectedRoute
 
 function Main() {
     return (
         <Router>
             <Routes>
+                {/* Rotas públicas */}
                 <Route path="/" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/plano" element={<PlanoContas />} />
-                <Route path="/pagamentos" element={<Pagamentos />} />
-                <Route path="/empresa" element={<Empresa />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/planejamento" element={<Planejamento />} />
+
+                {/* Rotas protegidas */}
+                <Route
+                    path="/plano"
+                    element={
+                        <ProtectedRoute allowedTypes={['admin', 'user']}>
+                            <PlanoContas />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/pagamentos"
+                    element={
+                        <ProtectedRoute allowedTypes={['admin', 'user']}>
+                            <Pagamentos />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/empresa"
+                    element={
+                        <ProtectedRoute allowedTypes={['admin', 'user']}>
+                            <Empresa />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/dashboard"
+                    element={
+                        <ProtectedRoute allowedTypes={['admin', 'user']}>
+                            <Dashboard />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/planejamento"
+                    element={
+                        <ProtectedRoute allowedTypes={['admin', 'user']}>
+                            <Planejamento />
+                        </ProtectedRoute>
+                    }
+                />
+
                 {/* Página 404 para qualquer rota não encontrada */}
                 <Route path="*" element={<NotFound />} />
             </Routes>

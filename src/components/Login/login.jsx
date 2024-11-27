@@ -62,33 +62,39 @@ function Login() {
     setError("");
 
     if (!captchaToken) {
-      setError("Por favor, complete o reCAPTCHA.");
-      setIsLoading(false);
-      return;
+        setError("Por favor, complete o reCAPTCHA.");
+        setIsLoading(false);
+        return;
     }
 
     try {
-      const response = await axios.post("https://auth-coinn2-0.onrender.com/auth/login", {
-        email,
-        password,
-        captchaToken, // Inclui o token do reCAPTCHA no payload
-      });
+        const response = await axios.post("https://auth-coinn2-0.onrender.com/auth/login", {
+            email,
+            password,
+            captchaToken,
+        });
 
-      console.log("Login bem-sucedido:", response.data);
+        console.log("Login bem-sucedido:", response.data);
 
-      localStorage.setItem("token", response.data.token);
-      navigate(response.data.redirect_url);
+        // Armazene informações no sessionStorage
+        localStorage.setItem("token", response.data.token);
+        sessionStorage.setItem("isLogged", "true");
+        sessionStorage.setItem("userType", "user"); // Defina de acordo com o retorno da API
+
+        // Redirecione para a rota fornecida
+        navigate(response.data.redirect_url, { replace: true });
     } catch (error) {
-      if (error.response && error.response.status === 401) {
-        setError(error.response.data.message);
-      } else {
-        setError("Erro ao se conectar com o servidor. Tente novamente mais tarde.");
-      }
-      console.error("Erro ao fazer login:", error);
+        if (error.response && error.response.status === 401) {
+            setError(error.response.data.message);
+        } else {
+            setError("Erro ao se conectar com o servidor. Tente novamente mais tarde.");
+        }
+        console.error("Erro ao fazer login:", error);
     } finally {
-      setIsLoading(false);
+        setIsLoading(false);
     }
-  };
+};
+
 
   return (
     <div className="login-container">
